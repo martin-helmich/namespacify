@@ -65,7 +65,15 @@ class FeatureContext extends BehatContext
 
         if ($content !== $actualContent)
         {
-            throw new Exception('File contents did not match!');
+            $tempFilename = $this->filename . '.should';
+            $tempFile = fopen($tempFilename, 'w');
+            fwrite($tempFile, $content);
+            fclose($tempFile);
+
+            $cmd = '/usr/bin/diff -u ' . $tempFilename . ' ' . $this->filename;
+            $content = shell_exec($cmd);
+
+            throw new Exception('File contents did not match!' . PHP_EOL . $content);
         }
     }
 

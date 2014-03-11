@@ -62,3 +62,17 @@ Feature: Indirect usage conversion
       <?php
       $a = get_class('\\My\\Foo\\Bar\\Baz');
       """
+
+  Scenario: Convert class name in strings containing other stuff
+    Given I have a file in the directory "build" with the following content:
+      """
+      <?php
+      $a = 'Foo_Bar_Baz::some_method';
+      """
+
+    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    Then the file should have the following content:
+      """
+      <?php
+      $a = '\\My\\Foo\\Bar\\Baz::some_method';
+      """
