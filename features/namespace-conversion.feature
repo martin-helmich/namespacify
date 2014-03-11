@@ -60,3 +60,17 @@ Feature: Class namespace conversion
       <?php
       $a = \My\Foo\Bar\Baz\Hooray::HUZAAH;
       """
+
+  Scenario: No namespace is added when no matching class exists
+    Given I have a file in the directory "build" with the following content:
+      """
+      <?php
+      class Bar_Baz { }
+      """
+
+    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    Then the file should have the following content:
+      """
+      <?php
+      class Bar_Baz { }
+      """

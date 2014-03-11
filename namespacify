@@ -139,16 +139,19 @@ function handleFile($filename) {
 			for (++ $i; $tokens[$i][0] === T_WHITESPACE; ++ $i);
 
 			$class = $oldClass = $tokens[$i][1];
-			$class = str_replace($sourcePseudoNamespace, $targetNamespace, $class);
-			$class = str_replace('_', '\\', $class);
 
-			echo $oldClass . " -> " . $class . PHP_EOL;
+			if (strpos($class, $sourcePseudoNamespace) === 0) {
+                $class = str_replace($sourcePseudoNamespace, $targetNamespace, $class);
+                $class = str_replace('_', '\\', $class);
 
-			$components = explode('\\', $class);
-			$realClass = array_pop($components);
-			$namespace = implode('\\', $components);
+                echo $oldClass . " -> " . $class . PHP_EOL;
 
-			$tokens[$i] = $realClass;
+                $components = explode('\\', $class);
+                $realClass = array_pop($components);
+                $namespace = implode('\\', $components);
+
+                $tokens[$i] = $realClass;
+			}
 		}
 
 		if ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
