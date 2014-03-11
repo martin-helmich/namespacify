@@ -1,3 +1,4 @@
 /vendor/
 /bin/
+/build/
 /.idea/workspace.xml
