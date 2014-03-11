@@ -42,7 +42,9 @@ class FeatureContext extends BehatContext
         mkdir($directory, 0777, TRUE);
         $this->filename = $directory . '/' . uniqid() . '.php';
 
-        file_put_contents($this->filename, $content);
+        $file = fopen($this->filename, 'w');
+        fwrite($file, $content);
+        fclose($file);
     }
 
     /**
