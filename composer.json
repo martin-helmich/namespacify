@@ -1,0 +1,30 @@
+{
+    "name": "helmich/namespacify",
+    "description": "Convert PHP 5.2-style classes to namespaces.",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/martin-helmich",
+    "authors": [
+        {
+            "name": "Martin Helmich",
+            "email": "m.helmich@mittwald.de",
+            "role": "lead"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/martin-helmich/namespacify/issues"
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4"
+    },
+    "require-dev": {
+        "behat/behat": "*@stable"
+    },
+    "bin": [
+        "namespacify"
+    ],
+    "config": {
+        "bin-dir": "bin"
+    }
+}
