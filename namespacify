@@ -159,7 +159,7 @@ function handleFile($filename) {
 				$class = trim($token[1], '\'"');
 				$class = convertClassName($class);
 
-				$tokens[$i][1] = '\'\\\\' . addslashes($class) . '\'';
+				$tokens[$i][1] = '\'' . addslashes($class) . '\'';
 			}
 		}
 

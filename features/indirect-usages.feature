@@ -60,5 +60,5 @@ Feature: Indirect usage conversion
     Then the file should have the following content:
       """
       <?php
-      $a = get_class('\\My\\Foo\\Bar\\Baz');
+      $a = get_class('My\\Foo\\Bar\\Baz');
       """
