@@ -16,7 +16,10 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.4"
+        "php": ">=5.4",
+        "symfony/console": "2.4.*",
+        "symfony/dependency-injection": "2.4.*",
+        "nikic/php-parser": "*"
     },
     "require-dev": {
         "behat/behat": "*@stable"
@@ -26,5 +29,10 @@
     ],
     "config": {
         "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-0": {
+            "Helmich\\Namespacify": "src/"
+        }
     }
 }

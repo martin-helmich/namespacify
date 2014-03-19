@@ -14,4 +14,10 @@ interface FileInterface
      * @return array
      */
     public function getTokens();
+
+    /**
+     * @return string
+     */
+    public function getContent();
+
 } 

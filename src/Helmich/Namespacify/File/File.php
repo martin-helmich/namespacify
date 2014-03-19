@@ -14,8 +14,15 @@ class File implements FileInterface
 
     public function getTokens()
     {
-        $content = file_get_contents($this->filename);
-        return token_get_all($content);
+        return token_get_all($this->getContent());
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return file_get_contents($this->filename);
     }
 
     /**

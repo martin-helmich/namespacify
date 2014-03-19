@@ -3,8 +3,21 @@ services:
     class: Helmich\Namespacify\MigrateCommand
     calls:
       - [setFileLocator, ["@file_locator"]]
-      - [setNamespaceConverter, ["@namespace_converter"]]
+      - [setNamespaceConverter, ["@namespace_converter_forward"]]
+  backport_command:
+    class: Helmich\Namespacify\BackportCommand
+    calls:
+      - [setFileLocator, ["@file_locator"]]
+      - [setNamespaceConverter, ["@namespace_converter_backward"]]
   file_locator:
     class: Helmich\Namespacify\File\FileLocator
-  namespace_converter:
-    class: Helmich\Namespacify\Converter\NamespaceConverter
+  namespace_converter_forward:
+    class: Helmich\Namespacify\Converter\ForwardNamespaceConverter
+  namespace_converter_backward:
+    class: Helmich\Namespacify\Converter\BackwardNamespaceConverter
+    arguments: ["@php_parser"]
+  php_parser:
+    class: 'PhpParser\Parser'
+    arguments: ["@php_lexer"]
+  php_lexer:
+    class: 'PhpParser\Lexer'
