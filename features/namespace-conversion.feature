@@ -8,7 +8,7 @@ Feature: Class namespace conversion
       class Foo_Bar_Baz { }
       """
 
-    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
       <?php
@@ -24,7 +24,7 @@ Feature: Class namespace conversion
       interface Foo_Bar_Bazable { }
       """
 
-    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
       <?php
@@ -40,7 +40,7 @@ Feature: Class namespace conversion
       $a = new Foo_Bar_Baz_Hooray();
       """
 
-    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
       <?php
@@ -54,7 +54,7 @@ Feature: Class namespace conversion
       $a = Foo_Bar_Baz_Hooray::HUZAAH;
       """
 
-    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
       <?php
@@ -68,7 +68,7 @@ Feature: Class namespace conversion
       class Bar_Baz { }
       """
 
-    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
       <?php

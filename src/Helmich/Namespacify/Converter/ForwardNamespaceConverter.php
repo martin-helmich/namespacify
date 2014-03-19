@@ -70,7 +70,7 @@ class ForwardNamespaceConverter implements NamespaceConverter
                         ',(' . $this->sourceNamespace . '[a-zA-Z_]+),',
                         function ($matches) use ($self)
                         {
-                            return '\\\\' . addslashes($self->convertClassName($matches[1]));
+                            return addslashes($self->convertClassName($matches[1]));
                         },
                         $tokens[$i][1]
                     );

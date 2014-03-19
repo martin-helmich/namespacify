@@ -11,7 +11,7 @@ Feature: Indirect usage conversion
       }
       """
 
-    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
       <?php
@@ -35,7 +35,7 @@ Feature: Indirect usage conversion
       }
       """
 
-    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
       <?php
@@ -56,11 +56,11 @@ Feature: Indirect usage conversion
       $a = get_class('Foo_Bar_Baz');
       """
 
-    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
       <?php
-      $a = get_class('\\My\\Foo\\Bar\\Baz');
+      $a = get_class('My\\Foo\\Bar\\Baz');
       """
 
   Scenario: Convert class name in strings containing other stuff
@@ -70,9 +70,9 @@ Feature: Indirect usage conversion
       $a = 'Foo_Bar_Baz::some_method';
       """
 
-    When I run "./namespacify --source-namespace Foo --target-namespace 'My\Foo' --directory build"
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
       <?php
-      $a = '\\My\\Foo\\Bar\\Baz::some_method';
+      $a = 'My\\Foo\\Bar\\Baz::some_method';
       """
