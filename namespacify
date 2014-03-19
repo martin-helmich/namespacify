@@ -156,11 +156,10 @@ function handleFile($filename) {
 
 		if ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
 			if (strpos($token[1], $sourcePseudoNamespace) !== FALSE) {
-                $tokens[$i][1] = preg_replace_callback(
-                    ',(' . $sourcePseudoNamespace . '[a-zA-Z_]+),',
-                    function ($matches) { return '\\\\' . addslashes(convertClassName($matches[1])); },
-                    $tokens[$i][1]
-                );
+				$class = trim($token[1], '\'"');
+				$class = convertClassName($class);
+
+				$tokens[$i][1] = '\'' . addslashes($class) . '\'';
 			}
 		}
 
