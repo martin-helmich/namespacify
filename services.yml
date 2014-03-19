@@ -1,0 +1,10 @@
+services:
+  migrate_command:
+    class: Helmich\Namespacify\MigrateCommand
+    calls:
+      - [setFileLocator, ["@file_locator"]]
+      - [setNamespaceConverter, ["@namespace_converter"]]
+  file_locator:
+    class: Helmich\Namespacify\File\FileLocator
+  namespace_converter:
+    class: Helmich\Namespacify\Converter\NamespaceConverter
