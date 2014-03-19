@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+use Helmich\Namespacify\MigrateCommand;
+use Symfony\Component\Console\Application;
+
+if (file_exists(__DIR__ . '/../vendor/autoload.php'))
+{
+    require_once __DIR__ . '/../vendor/autoload.php';
+}
+else if (file_exists(__DIR__ . '/../../../autoload.php'))
+{
+    require_once __DIR__ . '/../../../autoload.php';
+}
+else
+{
+    die('Could not find an autoload.php. Did you set up all dependencies?');
+}
+
+$container = new \Symfony\Component\DependencyInjection\ContainerBuilder();
+$loader = new \Symfony\Component\DependencyInjection\Loader\YamlFileLoader($container, new \Symfony\Component\Config\FileLocator(__DIR__ . '/..'));
+$loader->load('services.yml');
+
+$application = new Application();
+$application->add($container->get('migrate_command'));
+$application->add($container->get('backport_command'));
+$application->run();
