@@ -2,3 +2,4 @@
 /bin/
 /build/
 /.idea/workspace.xml
+/composer.lock
