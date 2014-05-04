@@ -21,21 +21,46 @@ class BackwardNamespaceConverterVisitor extends NodeVisitorAbstract
 
     public function __construct($sourceNamespace, $targetNamespace)
     {
-        $this->sourceNamespace = $sourceNamespace;
+        $this->sourceNamespace = trim($sourceNamespace, '\\');
         $this->targetNamespace = $targetNamespace;
+    }
+
+
+
+    private function isClassMatchingSourceNamespace($className)
+    {
+        return TRUE;
+    }
+
+
+
+    private function convertClassName($oldClassName)
+    {
+        $oldClassName = trim("" . $oldClassName, '\\');
+        $newClassName = $oldClassName;
+
+        if ($this->isClassMatchingSourceNamespace($oldClassName))
+        {
+            $newClassName = str_replace($this->sourceNamespace, $this->targetNamespace, $newClassName);
+            $newClassName = str_replace('\\', '_', $newClassName);
+
+            $newClassName = trim($newClassName, '_');
+        }
+
+        return $newClassName;
     }
 
 
 
     public function leaveNode(Node $node)
     {
-        if ($node instanceof Node\Name)
+        if ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_ || $node instanceof Node\Stmt\Function_)
         {
-            return new Node\Name($node->toString('_'));
+            $node->name = new Node\Name($this->convertClassName($node->namespacedName->toString()));
         }
-        elseif ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_ || $node instanceof Node\Stmt\Function_)
+        elseif ($node instanceof Node\Name)
         {
-            $node->name = $node->namespacedName->toString('_');
+            return new Node\Name($this->convertClassName($node->toString()));
         }
         elseif ($node instanceof Node\Stmt\Const_)
         {
@@ -57,4 +82,4 @@ class BackwardNamespaceConverterVisitor extends NodeVisitorAbstract
 
         return NULL;
     }
-} 
+}
