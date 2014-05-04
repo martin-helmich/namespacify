@@ -11,20 +11,31 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateCommand extends Command
 {
+
+
+
     /** @var FileLocatorInterface */
     private $fileLocator = NULL;
+
+
     /** @var NamespaceConverter */
     private $namespaceConverter = NULL;
+
+
 
     public function setFileLocator(FileLocatorInterface $loader)
     {
         $this->fileLocator = $loader;
     }
 
+
+
     public function setNamespaceConverter(NamespaceConverter $namespaceConverter)
     {
         $this->namespaceConverter = $namespaceConverter;
     }
+
+
 
     protected function configure()
     {
@@ -34,8 +45,11 @@ class MigrateCommand extends Command
             ->addArgument('source-namespace', InputArgument::REQUIRED, 'Source (pseudo) namespace.')
             ->addArgument('target-namespace', InputArgument::REQUIRED, 'Target (real) namespace.')
             ->addArgument('directory', InputArgument::OPTIONAL, 'Directory to parse.', '.')
-            ->addOption('backup', 'b', InputOption::VALUE_NONE, 'Backup files before writing back.');
+            ->addOption('backup', 'b', InputOption::VALUE_NONE, 'Backup files before writing back.')
+            ->addOption('reverse', 'r', InputOption::VALUE_NONE, 'Convert namespaced to pseudo-namespaced instead.');
     }
+
+
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -45,10 +59,17 @@ class MigrateCommand extends Command
         $this->namespaceConverter->setOptions(
             $input->getArgument('source-namespace'),
             $input->getArgument('target-namespace'),
-            $input->getOption('backup') ? TRUE : FALSE
+            $input->getOption('backup') ? TRUE : FALSE,
+            $input->getOption('reverse') ? TRUE : FALSE
         );
 
-        $output->writeln('<comment>' . count($files) . '</comment> PHP files found in directory <comment>' . $directory . '</comment>');
+        $output->writeln(
+            sprintf(
+                '<comment>%d</comment> PHP files found in directory <comment>%s</comment>.',
+                count($files),
+                $directory
+            )
+        );
 
         foreach ($files as $file)
         {

@@ -23,5 +23,5 @@ $loader->load('services.yml');
 
 $application = new Application();
 $application->add($container->get('migrate_command'));
-$application->add($container->get('backport_command'));
+//$application->add($container->get('backport_command'));
 $application->run();

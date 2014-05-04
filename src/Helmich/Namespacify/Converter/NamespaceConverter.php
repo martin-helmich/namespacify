@@ -8,7 +8,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface NamespaceConverter
 {
 
-    public function setOptions($sourceNamespace, $targetNamespace, $backup = FALSE);
+
+
+    public function setOptions($sourceNamespace, $targetNamespace, $backup = FALSE, $reverse = FALSE);
+
+
 
     public function convertFile(FileInterface $file, OutputInterface $out);
 } 

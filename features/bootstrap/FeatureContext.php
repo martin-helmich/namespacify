@@ -43,7 +43,7 @@ class FeatureContext extends BehatContext
         $this->filename = $directory . '/' . uniqid() . '.php';
 
         $file = fopen($this->filename, 'w');
-        fwrite($file, $content);
+        fwrite($file, "<?php\n\n" . $content);
         fclose($file);
     }
 
@@ -60,8 +60,8 @@ class FeatureContext extends BehatContext
      */
     public function assertFileHasContent(PyStringNode $content)
     {
-        $actualContent = trim(file_get_contents($this->filename));
-        $content       = trim($content);
+        $actualContent = $this->normalizeFileContent(file_get_contents($this->filename));
+        $content       = $this->normalizeFileContent("<?php\n\n" . trim($content));
 
         if ($content !== $actualContent)
         {
@@ -75,6 +75,17 @@ class FeatureContext extends BehatContext
 
             throw new Exception('File contents did not match!' . PHP_EOL . $content);
         }
+    }
+
+    private function normalizeFileContent($content)
+    {
+        $lines = explode("\n", trim($content));
+        $lines = array_map('trim', $lines);
+        $lines = array_filter($lines, function($line) { return strlen($line) > 0; });
+
+        $content = implode("\n", $lines);
+
+        return $content;
     }
 
 }

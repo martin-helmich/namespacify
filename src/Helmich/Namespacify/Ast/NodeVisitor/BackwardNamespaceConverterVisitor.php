@@ -5,18 +5,35 @@ namespace Helmich\Namespacify\Ast\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class NamespaceConverterVisitor extends NodeVisitorAbstract
+class BackwardNamespaceConverterVisitor extends NodeVisitorAbstract
 {
+
+
+
+    /** @var string */
+    private $sourceNamespace;
+
+
+    /** @var string */
+    private $targetNamespace;
+
+
+
+    public function __construct($sourceNamespace, $targetNamespace)
+    {
+        $this->sourceNamespace = $sourceNamespace;
+        $this->targetNamespace = $targetNamespace;
+    }
+
+
+
     public function leaveNode(Node $node)
     {
         if ($node instanceof Node\Name)
         {
             return new Node\Name($node->toString('_'));
         }
-        elseif ($node instanceof Node\Stmt\Class_
-            || $node instanceof Node\Stmt\Interface_
-            || $node instanceof Node\Stmt\Function_
-        )
+        elseif ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_ || $node instanceof Node\Stmt\Function_)
         {
             $node->name = $node->namespacedName->toString('_');
         }
@@ -37,5 +54,7 @@ class NamespaceConverterVisitor extends NodeVisitorAbstract
             // returning false removed the node altogether
             return FALSE;
         }
+
+        return NULL;
     }
 } 
