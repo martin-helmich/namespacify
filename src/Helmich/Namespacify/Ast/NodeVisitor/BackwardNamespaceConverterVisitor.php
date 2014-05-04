@@ -1,10 +1,26 @@
 <?php
 namespace Helmich\Namespacify\Ast\NodeVisitor;
 
+/*
+ * This file is part of namespacify.
+ * https://github.com/martin-helmich/namespacify
+ *
+ * (C) 2014 Martin Helmich <kontakt@martin-helmich.de>
+ *
+ * For license information, view the LICENSE.md file.
+ */
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * A node visitor that transforms namespaced class names into pseudo-namespaced class names.
+ **
+ * @author     Martin Helmich <kontakt@martin-helmich.de>
+ * @license    The MIT License
+ * @package    Helmich\Namespacify
+ * @subpackage Ast\NodeVisitor
+ */
 class BackwardNamespaceConverterVisitor extends NodeVisitorAbstract
 {
 
@@ -19,6 +35,12 @@ class BackwardNamespaceConverterVisitor extends NodeVisitorAbstract
 
 
 
+    /**
+     * Creates a new node visitor.
+     *
+     * @param string $sourceNamespace Source namespace.
+     * @param string $targetNamespace Target namespace (should be a pseudo-namespace).
+     */
     public function __construct($sourceNamespace, $targetNamespace)
     {
         $this->sourceNamespace = trim($sourceNamespace, '\\');

@@ -1,11 +1,28 @@
 <?php
 namespace Helmich\Namespacify\Ast\NodeVisitor;
 
+/*
+ * This file is part of namespacify.
+ * https://github.com/martin-helmich/namespacify
+ *
+ * (C) 2014 Martin Helmich <kontakt@martin-helmich.de>
+ *
+ * For license information, view the LICENSE.md file.
+ */
+
 use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\NodeAbstract;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * A node visitor that transforms pseudo-namespaced class names into namespaced class names.
+ **
+ * @author     Martin Helmich <kontakt@martin-helmich.de>
+ * @license    The MIT License
+ * @package    Helmich\Namespacify
+ * @subpackage Ast\NodeVisitor
+ */
 class ForwardNamespaceConverterVisitor extends NodeVisitorAbstract
 {
 

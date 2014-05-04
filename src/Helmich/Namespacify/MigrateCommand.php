@@ -1,6 +1,15 @@
 <?php
 namespace Helmich\Namespacify;
 
+/*
+ * This file is part of namespacify.
+ * https://github.com/martin-helmich/namespacify
+ *
+ * (C) 2014 Martin Helmich <kontakt@martin-helmich.de>
+ *
+ * For license information, view the LICENSE.md file.
+ */
+
 use Helmich\Namespacify\Converter\NamespaceConverter;
 use Helmich\Namespacify\File\FileLocatorInterface;
 use Symfony\Component\Console\Command\Command;
@@ -9,6 +18,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Command for triggering the namespace conversion process.
+ *
+ * @author  Martin Helmich <kontakt@martin-helmich.de>
+ * @license The MIT License
+ * @package Helmich\Namespacify
+ */
 class MigrateCommand extends Command
 {
 
@@ -23,13 +39,29 @@ class MigrateCommand extends Command
 
 
 
-    public function setFileLocator(FileLocatorInterface $loader)
+    /**
+     * Sets the file locator object.
+     *
+     * @internal
+     *
+     * @param \Helmich\Namespacify\File\FileLocatorInterface $locator The file locator.
+     * @return void
+     */
+    public function setFileLocator(FileLocatorInterface $locator)
     {
-        $this->fileLocator = $loader;
+        $this->fileLocator = $locator;
     }
 
 
 
+    /**
+     * Sets the namespace converter object.
+     *
+     * @internal
+     *
+     * @param \Helmich\Namespacify\Converter\NamespaceConverter $namespaceConverter The namespace converter.
+     * @return void
+     */
     public function setNamespaceConverter(NamespaceConverter $namespaceConverter)
     {
         $this->namespaceConverter = $namespaceConverter;
@@ -37,6 +69,11 @@ class MigrateCommand extends Command
 
 
 
+    /**
+     * Configures the command (name, description and arguments).
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -51,6 +88,13 @@ class MigrateCommand extends Command
 
 
 
+    /**
+     * Executes the command.
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface   $input  Input data.
+     * @param \Symfony\Component\Console\Output\OutputInterface $output Output stream.
+     * @return void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $directory = $input->getArgument('directory');
@@ -73,7 +117,9 @@ class MigrateCommand extends Command
 
         foreach ($files as $file)
         {
+            $output->write(sprintf('Converting file <comment>%s</comment>... ', $file->getFilename()));
             $this->namespaceConverter->convertFile($file, $output);
+            $output->writeln('<info>Done.</info>');
         }
 
         $output->writeln(sprintf('<info>Converted <comment>%d</comment> files.', count($files)));
