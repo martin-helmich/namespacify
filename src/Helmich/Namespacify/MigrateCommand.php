@@ -12,6 +12,7 @@ namespace Helmich\Namespacify;
 
 use Helmich\Namespacify\Converter\NamespaceConverter;
 use Helmich\Namespacify\File\FileLocatorInterface;
+use Helmich\Namespacify\Mapping\ClassMappingConcern;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -82,6 +83,7 @@ class MigrateCommand extends Command
             ->addArgument('source-namespace', InputArgument::REQUIRED, 'Source (pseudo) namespace.')
             ->addArgument('target-namespace', InputArgument::REQUIRED, 'Target (real) namespace.')
             ->addArgument('directory', InputArgument::OPTIONAL, 'Directory to parse.', '.')
+            ->addOption('alias-file', 'a', InputArgument::OPTIONAL, 'File to write alias definitions to.')
             ->addOption('backup', 'b', InputOption::VALUE_NONE, 'Backup files before writing back.')
             ->addOption('reverse', 'r', InputOption::VALUE_NONE, 'Convert namespaced to pseudo-namespaced instead.');
     }
@@ -107,6 +109,19 @@ class MigrateCommand extends Command
             $input->getOption('reverse') ? TRUE : FALSE
         );
 
+        $finishers = [];
+
+        if ($input->getOption('alias-file'))
+        {
+            $classMappingConcern = new ClassMappingConcern($this->namespaceConverter, $input->getOption('alias-file'));
+            $classMappingConcern->register();
+
+            $finishers[] = function () use ($classMappingConcern, $output)
+            {
+                $classMappingConcern->writeClassMap($output);
+            };
+        }
+
         $output->writeln(
             sprintf(
                 '<comment>%d</comment> PHP files found in directory <comment>%s</comment>.',
@@ -123,5 +138,10 @@ class MigrateCommand extends Command
         }
 
         $output->writeln(sprintf('<info>Converted <comment>%d</comment> files.', count($files)));
+
+        foreach ($finishers as $finisher)
+        {
+            $finisher();
+        }
     }
 } 

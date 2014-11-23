@@ -60,6 +60,28 @@ class FeatureContext implements Context
         }
     }
 
+    /**
+     * @Then /^the file "([^"]*)" should have the following content:$/
+     */
+    public function assertNamedFileHasContent($file, PyStringNode $content)
+    {
+        $actualContent = $this->normalizeFileContent(file_get_contents($file));
+        $content       = $this->normalizeFileContent("<?php\n\n" . trim($content));
+
+        if ($content !== $actualContent)
+        {
+            $tempFilename = $file . '.should';
+            $tempFile = fopen($tempFilename, 'w');
+            fwrite($tempFile, $content);
+            fclose($tempFile);
+
+            $cmd = '/usr/bin/diff -u ' . $tempFilename . ' ' . $file;
+            $content = shell_exec($cmd);
+
+            throw new Exception('File contents did not match!' . PHP_EOL . $content);
+        }
+    }
+
     private function normalizeFileContent($content)
     {
         $lines = explode("\n", trim($content));
@@ -67,6 +89,7 @@ class FeatureContext implements Context
         $lines = array_filter($lines, function($line) { return strlen($line) > 0; });
 
         $content = implode("\n", $lines);
+        $content = trim($content);
 
         return $content;
     }

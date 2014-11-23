@@ -1,9 +1,12 @@
 <?php
 namespace Helmich\Namespacify\Converter;
 
+use Helmich\Namespacify\Ast\NodeVisitor\AbstractNamespaceConverterVisitor;
 use Helmich\Namespacify\Ast\NodeVisitor\BackwardNamespaceConverterVisitor;
 use Helmich\Namespacify\Ast\NodeVisitor\ForwardNamespaceConverterVisitor;
 use Helmich\Namespacify\Ast\Printer\StandardPrinter;
+use Helmich\Namespacify\ClassRenamingListener;
+use Helmich\Namespacify\ConversionListener;
 use Helmich\Namespacify\File\FileInterface;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
@@ -35,10 +38,15 @@ class ASTBasedNamespaceConverter implements NamespaceConverter
     private $parser;
 
 
+    /** @var \SplObjectStorage<ClassRenamingListener> */
+    private $renameListeners = [];
+
+
 
     public function __construct(Parser $parser)
     {
-        $this->parser = $parser;
+        $this->parser          = $parser;
+        $this->renameListeners = new \SplObjectStorage();
     }
 
 
@@ -60,25 +68,45 @@ class ASTBasedNamespaceConverter implements NamespaceConverter
 
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new NameResolver());
-
-        if ($this->reverse === FALSE)
-        {
-            $traverser->addVisitor(
-                new ForwardNamespaceConverterVisitor($this->sourceNamespace, $this->targetNamespace)
-            );
-        }
-        else
-        {
-            $traverser->addVisitor(
-                new BackwardNamespaceConverterVisitor($this->sourceNamespace, $this->targetNamespace)
-            );
-        }
+        $traverser->addVisitor($this->buildConverterVisitor());
 
         $ast = $traverser->traverse($ast);
 
-        $printer = new StandardPrinter();
+        $printer     = new StandardPrinter();
         $printedCode = $printer->prettyPrintFile($ast);
 
         file_put_contents($file->getFilename(), $printedCode);
     }
+
+
+
+    public function addClassRenameListener(ClassRenamingListener $listener)
+    {
+        $this->renameListeners->attach($listener);
+    }
+
+
+
+    /**
+     * @return AbstractNamespaceConverterVisitor
+     */
+    private function buildConverterVisitor()
+    {
+        if ($this->reverse === FALSE)
+        {
+            $visitor = new ForwardNamespaceConverterVisitor($this->sourceNamespace, $this->targetNamespace);
+        }
+        else
+        {
+            $visitor = new BackwardNamespaceConverterVisitor($this->sourceNamespace, $this->targetNamespace);
+        }
+
+        foreach ($this->renameListeners as $renameListener)
+        {
+            $visitor->addRenameObserver($renameListener);
+        }
+        return $visitor;
+    }
+
+
 }

@@ -11,7 +11,6 @@ namespace Helmich\Namespacify\Ast\NodeVisitor;
  */
 
 use PhpParser\Node;
-use PhpParser\NodeVisitorAbstract;
 
 /**
  * A node visitor that transforms namespaced class names into pseudo-namespaced class names.
@@ -21,7 +20,7 @@ use PhpParser\NodeVisitorAbstract;
  * @package    Helmich\Namespacify
  * @subpackage Ast\NodeVisitor
  */
-class BackwardNamespaceConverterVisitor extends NodeVisitorAbstract
+class BackwardNamespaceConverterVisitor extends AbstractNamespaceConverterVisitor
 {
 
 
@@ -78,7 +77,10 @@ class BackwardNamespaceConverterVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_ || $node instanceof Node\Stmt\Function_)
         {
-            $node->name = new Node\Name($this->convertClassName($node->namespacedName->toString()));
+            $newClassName = $this->convertClassName($node->namespacedName->toString());
+
+            $this->notifyRenameObservers($node->namespacedName->toString(), $newClassName);
+            $node->name = new Node\Name($newClassName);
         }
         elseif ($node instanceof Node\Name)
         {
