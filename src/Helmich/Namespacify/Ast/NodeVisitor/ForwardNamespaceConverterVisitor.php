@@ -17,13 +17,13 @@ use PhpParser\NodeVisitorAbstract;
 
 /**
  * A node visitor that transforms pseudo-namespaced class names into namespaced class names.
- **
+ *
  * @author     Martin Helmich <kontakt@martin-helmich.de>
  * @license    The MIT License
  * @package    Helmich\Namespacify
  * @subpackage Ast\NodeVisitor
  */
-class ForwardNamespaceConverterVisitor extends NodeVisitorAbstract
+class ForwardNamespaceConverterVisitor extends AbstractNamespaceConverterVisitor
 {
 
 
@@ -149,6 +149,7 @@ class ForwardNamespaceConverterVisitor extends NodeVisitorAbstract
 
         if ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Interface_ || $node instanceof Node\Stmt\Function_)
         {
+            $oldClassName = $node->name;
             $newClassName = $this->convertClassName($node->name);
             list($namespace, $className) = $this->splitClassAndNamespace($newClassName);
 
@@ -159,6 +160,7 @@ class ForwardNamespaceConverterVisitor extends NodeVisitorAbstract
 
                 $this->namespaceNodes[] = $newNode;
 
+                $this->notifyRenameObservers($oldClassName, $newClassName);
                 return $newNode;
             }
             else
