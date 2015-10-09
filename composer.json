@@ -15,14 +15,15 @@
         "issues": "https://github.com/martin-helmich/namespacify/issues"
     },
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=5.4",
         "symfony/console": "2.4.*",
         "symfony/dependency-injection": "2.4.*",
-        "nikic/php-parser": "*"
+        "nikic/php-parser": "~1.4"
     },
     "require-dev": {
-        "behat/behat": "~3@stable"
+        "behat/behat": "~3.0"
     },
     "bin": [
         "namespacify"
