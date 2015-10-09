@@ -96,3 +96,24 @@ Feature: Class namespace conversion
       {
       }
       """
+
+  Scenario: Existing imports are handled correctly
+    Given I have a file in the directory "build" with the following content:
+      """
+      use Other\Bar\SuperBaz;
+
+      class Foo_Bar_Baz extends SuperBaz
+      {
+      }
+      """
+
+    When I run "./bin/namespacify migrate Foo 'My\Foo' build"
+    Then the file should have the following content:
+      """
+      namepace My\Foo\Bar;
+      use Other\Bar\SuperBaz;
+
+      class Baz extends SuperBaz
+      {
+      }
+      """
