@@ -43,6 +43,10 @@ class ForwardNamespaceConverterVisitor extends AbstractNamespaceConverterVisitor
     private $imports = [];
 
 
+    /** @var \PhpParser\Node\Stmt\Use_ */
+    private $previousImports = [];
+
+
 
     public function __construct($sourceNamespace, $targetNamespace)
     {
@@ -135,6 +139,16 @@ class ForwardNamespaceConverterVisitor extends AbstractNamespaceConverterVisitor
 
 
 
+    public function enterNode(Node $node)
+    {
+        if ($node instanceof Node\Stmt\Use_)
+        {
+            $this->previousImports[] = $node;
+        }
+    }
+
+
+
     public function leaveNode(Node $node)
     {
         if ($node instanceof NodeAbstract && $node->getDocComment() !== NULL)
@@ -155,7 +169,11 @@ class ForwardNamespaceConverterVisitor extends AbstractNamespaceConverterVisitor
 
             if ($namespace)
             {
-                $newNode    = new Node\Stmt\Namespace_(new Node\Name($namespace), [$node]);
+                $newNode    = new Node\Stmt\Namespace_(
+                    new Node\Name($namespace),
+                    array_merge($this->previousImports, [$node])
+                );
+
                 $node->name = $className;
 
                 $this->namespaceNodes[] = $newNode;
@@ -183,7 +201,11 @@ class ForwardNamespaceConverterVisitor extends AbstractNamespaceConverterVisitor
         {
             $node->value = $this->replaceClassNamesInString($node->value, FALSE);
         }
+        else if ($node instanceof Node\Stmt\Use_ && in_array($node, $this->previousImports))
+        {
+            return FALSE;
+        }
 
         return NULL;
     }
-} 
+}
