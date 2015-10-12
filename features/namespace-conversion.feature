@@ -110,10 +110,10 @@ Feature: Class namespace conversion
     When I run "./bin/namespacify migrate Foo 'My\Foo' build"
     Then the file should have the following content:
       """
-      namepace My\Foo\Bar;
+      namespace My\Foo\Bar;
       use Other\Bar\SuperBaz;
 
-      class Baz extends SuperBaz
+      class Baz extends \Other\Bar\SuperBaz
       {
       }
       """
