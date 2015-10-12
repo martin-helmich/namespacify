@@ -1,9 +1,7 @@
 namespacify
 ===========
 
-<a href="https://travis-ci.org/martin-helmich/namespacify" target="_blank">
-  <img src="https://travis-ci.org/martin-helmich/namespacify.png"/>
-</a>
+[![Build Status](https://travis-ci.org/martin-helmich/namespacify.svg?branch=master)](https://travis-ci.org/martin-helmich/namespacify)
 
 `namespacify` converts PHP 5.2-style pseudo namespaces into real PHP namespaces
 (and vice versa).
