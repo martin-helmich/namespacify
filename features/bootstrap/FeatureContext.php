@@ -35,7 +35,8 @@ class FeatureContext implements Context
      */
     public function doRun($command)
     {
-        shell_exec($command);
+        $output = shell_exec($command);
+        echo($output);
     }
 
     /**
